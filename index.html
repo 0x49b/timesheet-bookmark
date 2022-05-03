@@ -1,0 +1,114 @@
+<html>
+<head>
+    <title>Jira TimeSheet Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <style>
+        .cb {
+            display      : inline;
+            margin-right : 20px;
+        }
+
+        .container {
+            width : 75vh;
+        }
+
+        textarea {
+            height : 300px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Create Jira TimeSheet Report</h1>
+    <form>
+        <fieldset>
+            <label for="userNumber">User Number</label>
+            <input type="text" placeholder="" id="userNumber">
+
+            <h6>Projects</h6>
+
+            <label for="checkboxSOPRE" class="cb">
+                <input type="checkbox" id="checkboxSOPRE" value="27000">
+                SOPRE
+            </label>
+
+            <label for="checkboxARTRM" class="cb">
+                <input type="checkbox" id="checkboxARTRM" value="27206">
+                ARTRM
+            </label>
+
+            <label for="checkboxSOPREWeb" class="cb">
+                <input type="checkbox" id="checkboxSOPREWeb" value="25701">
+                SOPRE Web
+            </label>
+        </fieldset>
+    </form>
+
+    <details class="details-example">
+        <summary>See content of Bookmark</summary>
+        <label for="bookmark"></label>
+        <textarea id="bookmark"></textarea>
+    </details>
+    <br/>
+
+
+
+    <button id="bookmarkButton">Copy Bookmark</button>
+
+    <p>
+        How to add
+    </p>
+
+</div>
+</body>
+
+<script>
+
+    const uNumberElement  = document.getElementById("userNumber");
+    const cbSOPRE         = document.getElementById("checkboxSOPRE");
+    const cbARTRM         = document.getElementById("checkboxARTRM");
+    const cbSOPREWEB      = document.getElementById("checkboxSOPREWeb");
+    const cbArray         = [cbSOPRE, cbARTRM, cbSOPREWEB];
+    const bookmarkElement = document.getElementById("bookmark");
+    const bookmarkButton  = document.getElementById("bookmarkButton");
+
+    let projectString = "";
+
+    window.onkeyup = () => {
+        createProjectString();
+        updateBookmark();
+    }
+
+    cbArray.forEach(cb => cb.addEventListener('change', () => createProjectString()));
+
+    const createProjectString = () => {
+        projectString = "";
+        cbArray.forEach(cb => {
+            (cb.checked)
+                ? projectString += `&projectid=${cb.value}`
+                : "";
+        });
+        updateBookmark();
+    }
+
+    const updateBookmark = () => {
+        checkElements();
+        bookmarkElement.textContent = `data:text/html;charset=utf-8,%3Chtml%20style%3D%22font-family%3A%20sans-serif%22%20lang%3D%22de%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Ctitle%3EJira%20Timereport%3C%2Ftitle%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20label%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20min-width%20%3A%2050px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20display%20%20%20%3A%20inline-block%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%3Ch2%3EJira%20TimeReport%3C%2Fh2%3E%0A%3Clabel%20for%3D%22start%22%3EStart%3A%3C%2Flabel%3E%3Cinput%20type%3D%22date%22%20id%3D%22start%22%3E%3Cbr%2F%3E%0A%3Clabel%20for%3D%22end%22%3EEnd%3A%3C%2Flabel%3E%3Cinput%20type%3D%22date%22%20id%3D%22end%22%3E%0A%3Cbr%2F%3E%3Cbr%2F%3E%0A%3Cbutton%20id%3D%22show%22%3Eshow%3C%2Fbutton%3E%0A%3Cscript%3E%0A%20%20%20%20const%20start%20%20%20%20%20%20%20%20%3D%20document.getElementById%28%22start%22%29%3B%0A%20%20%20%20const%20end%20%20%20%20%20%20%20%20%20%20%3D%20document.getElementById%28%22end%22%29%3B%0A%20%20%20%20const%20show%20%20%20%20%20%20%20%20%20%3D%20document.getElementById%28%22show%22%29%3B%0A%20%20%20%20const%20date%20%20%20%20%20%20%20%20%20%3D%20new%20Date%28%29%3B%0A%20%20%20%20const%20currentMonth%20%3D%20date.getMonth%28%29%3B%0A%20%20%20%20start.valueAsDate%20%20%3D%20new%20Date%28date.getFullYear%28%29%2C%20date.getMonth%28%29%2C%202%29%3B%0A%20%20%20%20end.valueAsDate%20%20%20%20%3D%20new%20Date%28date.getFullYear%28%29%2C%20date.getMonth%28%29%20%2B%201%2C%201%29%3B%0A%20%20%20%20show.onclick%20%20%20%20%20%20%20%3D%20e%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20window.location%20%3D%20%60https%3A%2F%2Fflow.sbb.ch%2Fsecure%2FTimesheetReport.jspa%3FreportKey%3Djira-timesheet-plugin%253Areport%26selectedProjectId%3D27206%26reportingDay%3D0%26startDate%3D%24%7Bstart.value%7D%26endDate%3D%24%7Bend.value%7D%26targetUser%3D${uNumberElement.value}%26projectRoleId%3D%26${projectString}%26filterid%3D%26priority%3D%26commentfirstword%3D%26sum%3Dday%26groupByField%3D%26sortBy%3D%26sortDir%3DASC%26Next%3DNext%60%3B%0A%20%20%20%20%7D%0A%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E`;
+    }
+
+    const checkElements = () => {
+        (uNumberElement.value !== "" && uNumberElement.value.length >= 5)
+            ? bookmarkButton.removeAttribute('disabled')
+            : bookmarkButton.disabled = true;
+    }
+
+    bookmarkButton.onclick = () => {
+        navigator.clipboard.writeText(bookmarkElement.textContent);
+    };
+
+    checkElements();
+
+
+</script>
+
+</html>
